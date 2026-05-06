@@ -40,3 +40,14 @@ venv/
 
 # Node.js
 node_modules/
+
+# Data files (Crucial for Quant projects)
+# 避免將超大 CSV 檔案上傳到 GitHub，特別是當你有多個版本時
+data/*.csv
+!data/2330.TW.csv  # 如果你希望保留這個初始範例，可以用 ! 排除
+
+# Backtest Results
+# 避免上傳跑出來的損益報告或交易日誌
+results/
+*.log
+result.csv
