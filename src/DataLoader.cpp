@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include <cmath>
 
 std::vector<StockData> loadCSV(const std::string& filename) {
     std::vector<StockData> dataList;
@@ -39,7 +40,8 @@ std::vector<StockData> loadCSV(const std::string& filename) {
                 std::string token = line.substr(start, end - start);
                 
                 if (columnIndex == 1) { // Price 欄位
-                    data.price = std::stod(token);
+                    double raw_price = std::stod(token);
+                    data.price = static_cast<int64_t>(std::round(raw_price * 100000000.0));
                     hasPrice = true;
                 } else if (columnIndex == 4) { // Trades 資料的 Time 欄位索引為 4
                     data.timestamp = std::stoull(token);
