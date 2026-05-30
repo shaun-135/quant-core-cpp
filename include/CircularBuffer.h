@@ -15,7 +15,8 @@ private:
 public:
     CircularBuffer(size_t size) : buffer(size), capacity(size) {}
 
-    
+    bool isFull() const { return full; }
+
     void add(T item) {
         if (full) {
             running_sum -= buffer[head]; // 扣除即將被覆蓋的舊資料
@@ -38,3 +39,4 @@ public:
 };
 
 #endif
+
