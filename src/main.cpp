@@ -25,13 +25,11 @@ int main() {
     int bestPeriod = 0;
     double bestLower = 0, bestUpper = 0;
 
-    // 關閉終端機的大量輸出，以免洗版 (如果你引擎內有 cout，這裡搜尋時會印很多，實務上引擎的 cout 應該加開關，但為了速度我們先不管)
-    for (int p = 10; p <= 20; p += 2) {           // 週期從 10 到 20
-        for (double lower = 20; lower <= 40; lower += 5) { // 超賣線 20 到 40
-            double upper = 100 - lower;           // 對稱超買線 80 到 60
+    for (int p = 10; p <= 20; p += 2) {           
+        for (double lower = 20; lower <= 40; lower += 5) { 
+            double upper = 100 - lower;           
 
             auto rsiStrat = std::make_unique<RSIStrategy>(p, lower, upper);
-            // 使用 "temp" 作為名稱，這些 CSV 之後可以無視或刪除
             BacktestResult res = engine.run(bars, std::move(rsiStrat), "temp_search"); 
 
             if (res.totalNetProfit > bestNetPnL) {
@@ -51,11 +49,30 @@ int main() {
 
     std::cout << "\n=== Phase 2: Generating Golden Dataset for Python ===\n";
     
-    // 用最好的參數跑最後一次，並命名為 Best_RSI_Strategy，這會產出我們畫圖要用的 CSV
     auto bestRsiStrat = std::make_unique<RSIStrategy>(bestPeriod, bestLower, bestUpper);
     BacktestResult finalResult = engine.run(bars, std::move(bestRsiStrat), "Best_RSI_Strategy");
 
     std::cout << "\nGolden CSV exported as: logs/Best_RSI_Strategy_trades.csv\n";
     
+    // ==========================================
+    // Phase 3: Final Benchmark Report (終極對決報表)
+    // ==========================================
+    
+    // 重新跑一次 MA 與 Buy & Hold 作為對照組
+    auto maStrategy = std::make_unique<MACrossStrategy>(20, 2);
+    auto bnhStrategy = std::make_unique<BuyAndHoldStrategy>();
+
+    BacktestResult maResult = engine.run(bars, std::move(maStrategy), "MA_Strategy");
+    BacktestResult bnhResult = engine.run(bars, std::move(bnhStrategy), "BuyAndHold_Strategy");
+
+    std::cout << "\n=== Final QuantCore Benchmark Report ===\n";
+    std::cout << "[MA Strategy] Net PnL: " << std::fixed << std::setprecision(2) << (maResult.totalNetProfit / SCALE) 
+              << " | Trades: " << maResult.tradeCount << "\n";
+    std::cout << "[Buy & Hold]  Net PnL: " << std::fixed << std::setprecision(2) << (bnhResult.totalNetProfit / SCALE) 
+              << " | Trades: " << bnhResult.tradeCount << "\n";
+    std::cout << "[Best RSI]    Net PnL: " << std::fixed << std::setprecision(2) << (finalResult.totalNetProfit / SCALE) 
+              << " | Trades: " << finalResult.tradeCount << "\n";
+    std::cout << "========================================\n";
+
     return 0;
 }
