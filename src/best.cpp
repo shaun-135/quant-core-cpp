@@ -40,7 +40,7 @@ void calculateMaxTheoreticalProfit(const std::vector<StockData>& ticks) {
         int64_t next_cash = std::max(cash, hold + sell_income);
         int64_t next_hold = std::max(hold, cash - buy_cost);
 
-        cash = next_cash;
+        cash = next_cash;   
         hold = next_hold;
     }
 
