@@ -51,3 +51,6 @@ data/*.csv
 results/
 *.log
 result.csv
+
+*.txt
+logs/

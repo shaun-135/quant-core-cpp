@@ -2,7 +2,6 @@
 #define CIRCULARBUFFER_H
 
 #include <vector>
-#include <numeric>
 
 template <typename T>
 class CircularBuffer {
@@ -11,24 +10,33 @@ private:
     size_t head = 0;
     size_t capacity;
     bool full = false;
+    T running_sum = 0.0; // O(1) 核心：滾動總和
 
 public:
     CircularBuffer(size_t size) : buffer(size), capacity(size) {}
 
-    // 加入新數據
+    bool isFull() const { return full; }
+
     void add(T item) {
+        if (full) {
+            running_sum -= buffer[head]; // 扣除即將被覆蓋的舊資料
+        }
+
+        running_sum += item;
         buffer[head] = item;
+
         head = (head + 1) % capacity;
-        if (head == 0) full = true;
+        if (!full && head == 0) {
+            full = true;
+        }
     }
 
-    // 計算平均值 (用於均線)
-    double getAverage() const {
+    int64_t getAverage() const {
         size_t current_size = full ? capacity : head;
-        if (current_size == 0) return 0.0;
-        T sum = std::accumulate(buffer.begin(), buffer.begin() + current_size, 0.0);
-        return static_cast<double>(sum) / current_size;
+        if (current_size == 0) return 0;
+        return static_cast<int64_t>(running_sum) / current_size; // O(1) 直接計算
     }
 };
 
 #endif
+
