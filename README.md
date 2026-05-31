@@ -87,7 +87,7 @@ Prototype Report
     引入 `std::unordered_map` (Hash Table) 管理多檔標的的持倉狀態，將單機回測升級為多標的投資組合模擬。
 3.  **交易日誌自動化輸出**：
     實作 `std::ofstream` 模組，將所有交易明細導出至 `result.csv` 以利後續視覺化分析。
-
+ 
 ---
 
 # Final Report
