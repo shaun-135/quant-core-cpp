@@ -143,10 +143,10 @@ QuantCore/
 ### 視覺化數據證明
 
 **策略最佳化執行儀表板：**
-![Backtest Dashboard](logs/backtest_dashboard.png)
+![Backtest Dashboard](backtest_dashboard.png)
 
 **資料結構效能對決（線性時間 vs 常數時間）：**
-![Complexity Analysis](logs/benchmark_complexity.png)
+![Complexity Analysis](benchmark_complexity.png)
 
 ---
 
